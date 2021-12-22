@@ -1,4 +1,4 @@
-const {Admin, validate} = require('../models/admin');
+const { Admin, validate } = require('../models/admin');
 const _ = require('lodash')
 const Joi = require('joi');
 const bcrypt = require('bcrypt')
@@ -8,12 +8,14 @@ const bcrypt = require('bcrypt')
 module.exports.adminSignUp = async (req, res) => {
     
     const {error} = validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    if (error) return res.status(400).json({ message: error.details[0].message });
 
    try {
     
         let admin = await Admin.findOne({ email: req.body.email });
-        if(admin) return res.status(400).send('Already an admin');
+        if(admin) return res.status(400).json({
+            message: 'Already an admin'
+        });
 
         admin = new Admin(_.pick(req.body, ['name', 'email', 'password']));
 
@@ -22,9 +24,9 @@ module.exports.adminSignUp = async (req, res) => {
 
         await admin.save();
 
-        return res.status(200).send(_.pick(admin, ['name', 'email']));
+        return res.status(201).json( _.pick(admin, ['name', 'email']) );
    } catch (error) {
-       return res.status(500).send(error);
+       return res.status(500).json({ message: 'Internal server error' });
    }
 
 }
@@ -32,20 +34,20 @@ module.exports.adminSignUp = async (req, res) => {
 module.exports.adminLogin = async (req, res) => {
 
     const { error } = validateLoginBody(req.body);
-    if(error) return res.status(400).send(error.details[0].message);
+    if(error) return res.status(400).json({message: error.details[0].message});
 
     try {
         let admin = await Admin.findOne({ email: req.body.email }).select('+password');
-        if(!admin) return res.status(400).send('Invalid email or password');
+        if(!admin) return res.status(400).json({ message: 'Invalid email or password' });
        
         const validPassword = await bcrypt.compare(req.body.password, admin.password);
-        if(!validPassword) return res.status(400).send('Invalid email or password');
+        if(!validPassword) return res.status(400).json({ message: 'Invalid email or password' });
        
         const token = admin.generateAuthToken();   
-        res.status(200).send(token);
+        res.status(200).json({ token });
 
     } catch (error) {
-        return res.status(500).send('Internal Server error');
+        return res.status(500).json({ message: 'Internal server error' });
     }
 
 }

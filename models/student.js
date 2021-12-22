@@ -1,5 +1,5 @@
-
 const mongoose = require('mongoose');
+const Joi = require('joi')
 
 const studentSchema = new mongoose.Schema({
 
@@ -26,26 +26,50 @@ const studentSchema = new mongoose.Schema({
     },
 
     courseScores: {
-        dsa: Number,
-        webD: Number,
-        react: Number
+        dsa: {
+            type: Number,
+            max: 100
+        },
+        webD: {
+            type: Number,
+            max: 100
+        },
+        react: {
+            type: Number,
+            max: 100
+        }
     },
 
     isPlaced: {
         type: Boolean,
         default: false
-    },
-
-    interviews: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Interview'
-        }
-    ]
+    }
     
 }, {
     timestamps: true
 })
 
+
+function validateStudent(student) {
+    const schema = Joi.object({
+        name: Joi.string().max(255).required(),
+        college: Joi.string().required(),
+            // batch: Joi.object().keys({
+        month: Joi.string().required(),
+        year: Joi.number().required(),
+            // }),
+            // courseScores: Joi.object().keys({
+        dsa: Joi.number().max(100),
+        webD: Joi.number().max(100),
+        react: Joi.number().max(100)
+            // })
+    })
+
+    return schema.validate(student);
+}
+
 const Student = new mongoose.model('Student', studentSchema);
-module.exports = Student;
+module.exports = {
+    Student,
+    validateStudent
+};
