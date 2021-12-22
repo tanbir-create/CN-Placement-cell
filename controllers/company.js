@@ -21,3 +21,7 @@ module.exports.addNew = async ( req, res ) => {
     }
 
 }
+
+module.exports.getCompanies = async (req, res) => {
+    
+}

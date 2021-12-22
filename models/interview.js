@@ -16,7 +16,7 @@ const interviewSchema = new mongoose.Schema({
 
     status: {
         type: String,
-        requried: true,
+        default: "DIDN'T-ATTEMPT",
         uppercase: true,
         enum: ['PASS', 'FAIL', 'ON-HOLD', "DIDN'T-ATTEMPT"] 
     }
