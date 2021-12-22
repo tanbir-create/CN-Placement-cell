@@ -4,8 +4,8 @@ Maintain database of all student interviews
 
 ### Theme: ###
 
-Team Career Camp wants to maintain a database of all the student interviews [only for their own
-use], for this they store the following details:
+- Team Career Camp wants to maintain a database of all the student interviews [only for their own
+  use], for this they store the following details:
   - Batch
   - Student Details (including college, status: [placed, not_placed])
   - Course Scores (including DSA Final Score, WebD Final Score, React Final Score)
